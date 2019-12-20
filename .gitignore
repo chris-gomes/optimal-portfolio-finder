@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# project files
+stocks.txt
+
+# editors
+.vscode/
