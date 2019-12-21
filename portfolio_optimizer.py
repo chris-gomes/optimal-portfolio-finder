@@ -17,10 +17,9 @@ class PortfolioOptimizer():
             self.stock_returns = stock_returns
             self.rf_rates = rf_rates
 
+    # tests if the weights given are valid
     def is_valid_weights(self, weights):
-        if weights == None:
-            raise ValueError('weights cannot be None')
-        elif type(weights) != list:
+        if type(weights) != list:
             raise ValueError('weights must be a list')
         elif len(weights) != self.stock_returns.shape[1]:
             raise ValueError('weights must be the same length as the number of stocks')
@@ -41,22 +40,23 @@ class PortfolioOptimizer():
             return np.sqrt(np.dot(weights_array.T, np.dot(self.stock_returns.cov()*12, weights)))
 
     # Define the negative Sharpe Ratio function that we will minimize
-    def neg_SR(self, weights):
-        sharpe_ratio = (self.port_ret(weights) - self.rf_rates['rf'].mean() * 12) / self.port_sd(weights)
+    def neg_sharpe_ratio(self, weights):
+        print(weights)
+        sharpe_ratio = (self.port_ret(weights) - self.rf_rates.mean() * 12) / self.port_sd(weights)
         return -1 * sharpe_ratio
 
     # find the portfolio with the largest Sharpe ratio
-    def find_optimal_port(self, weights):
+    def find_optimal_port(self):
         # initialize constraints for weights
         constraints = ({'type':'eq','fun': lambda weights: np.sum(weights) - 1})
 
         # initialize bounds for weights
-        bounds = [(0, 1)] * len(weights)
+        bounds = [(0, 1)] * self.stock_returns.shape[1]
 
         # create an intial guess of equal weights
-        init_guess = [1/len(weights)] * len(weights)
+        init_guess = [1/self.stock_returns.shape[1]] * self.stock_returns.shape[1]
 
         # Use the SLSQP (Sequential Least Squares Programming) for minimization
-        optimal_port = minimize(self.neg_SR, init_guess, method='SLSQP', bounds=bounds, constraints=constraints)
+        optimal_port = minimize(self.neg_sharpe_ratio, init_guess, method='SLSQP', bounds=bounds, constraints=constraints)
 
         return optimal_port.x, -optimal_port.fun

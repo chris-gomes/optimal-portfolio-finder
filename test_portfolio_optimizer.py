@@ -14,7 +14,7 @@ class TestPortfolioOptimizer(unittest.TestCase):
     def test_is_valid_weights_null(self):
         self.assertRaisesRegex(
             ValueError,
-            'weights cannot be None',
+            'weights must be a list',
             self.po.is_valid_weights,
             None
         )
@@ -65,6 +65,12 @@ class TestPortfolioOptimizer(unittest.TestCase):
     # test if an unequally weighted portfolio sd is caluated correctly
     def test_port_sd_unequal_weights(self):
         self.assertAlmostEqual(self.po.port_sd([0.7, 0.3]), 1.3373810)
+
+    def test_neg_sharpe_ratio(self):
+        self.assertAlmostEqual(self.po.neg_sharpe_ratio([0.5, 0.5]), -3.5276446)
+
+    def test_find_optimal_port(self):
+        self.assertAlmostEqual(self.po.find_optimal_port(), 0)
 
 if __name__ == '__main__':
     unittest.main()
