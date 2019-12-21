@@ -47,14 +47,16 @@ class PortfolioOptimizer():
 
     # find the portfolio with the largest Sharpe ratio
     def find_optimal_port(self, weights):
+        # initialize constraints for weights
         constraints = ({'type':'eq','fun': lambda weights: np.sum(weights) - 1})
 
         # initialize bounds for weights
         bounds = [(0, 1)] * len(weights)
 
         # create an intial guess of equal weights
-        
-        init_guess = [1]
+        init_guess = [1/len(weights)] * len(weights)
 
         # Use the SLSQP (Sequential Least Squares Programming) for minimization
-        optimal_port = minimize(self.neg_SR,init_guess,method='SLSQP',bounds = bounds, constraints=constraints)
+        optimal_port = minimize(self.neg_SR, init_guess, method='SLSQP', bounds=bounds, constraints=constraints)
+
+        return optimal_port.x, -optimal_port.fun
