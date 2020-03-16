@@ -61,7 +61,7 @@ class TestPortfolioOptimizer(unittest.TestCase):
         self.assertAlmostEqual(self.po.neg_sharpe_ratio(np.array([0.5, 0.5])), -3.5276446)
 
     def test_find_optimal_port(self):
-        self.assertListEqual(self.po.find_optimal_port(), [[0.18401301883230559, 0.8159869811676945], 8.246236159757526])
+        self.assertListEqual(self.po.find_optimal_port(), [[0.18, 0.82], 8.25])
 
 if __name__ == '__main__':
     unittest.main()
